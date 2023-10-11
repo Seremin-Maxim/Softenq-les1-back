@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "last",
+    "password": "q123",
+    "database": "lastdb",
+    "host": "localhost",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "last",
+    "password": "q123",
+    "database": "lastdb",
+    "host": "localhost",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "last",
+    "password": "q123",
+    "database": "lastdb",
+    "host": "localhost",
+    "dialect": "postgres"
+  }
+}
