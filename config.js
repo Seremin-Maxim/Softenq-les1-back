@@ -17,4 +17,4 @@ async function init() {
   }
 
 init();
-module.exports = sequelize;
+//module.exports = sequelize; //это работает

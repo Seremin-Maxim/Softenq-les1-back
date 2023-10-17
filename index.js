@@ -1,37 +1,65 @@
-/*const sequelize = require("./config");
-const express = require('express');
-const cors = require('cors');
-
-const app = express();
-app.use(cors());
-
-app.get("/getData",(req,res)=>{
-  res.send("Hello");
-});
-
-app.listen(3000, () => console.log('Example app is listening on port 3000.'));
-*/
-
-//const sequelize = require("./config");
-
-
-
-
+//старый rabichiy
 const express = require('express');//импорт, позволяющий делать запросы
 const cors = require('cors');//кросс-домен. запросы
+
+const db = require("./models");
 
 const httpProxy = require('http-proxy');
 const proxy = httpProxy.createProxyServer();
 
 const app = express();//экзепляр ехр приложения
 app.use(cors());//разрешаем кросс запросы
+app.use(express.json());
 
-app.get("/getData",(req,res)=>{
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }));
+
+app.get("/api",(req,res)=>{
   res.send("Hello");
-});//когда на серв приходит гет запрос, овте - хелло
+});//когда на серв приходит гет запрос, ответ - хелло
+
+
+
+
+const Role = db.role;
+
+db.sequelize.sync({force: true}).then(() => {
+  console.log('Drop and Resync Db');
+  initial();
+});
+
+function initial() {
+  Role.create({
+    id: 1,
+    name: "user"
+  });
+ 
+  Role.create({
+    id: 2,
+    name: "moderator"
+  });
+ 
+  Role.create({
+    id: 3,
+    name: "admin"
+  });
+}
+
+// routes
+require('./routes/auth.routes')(app);
+require('./routes/user.routes')(app);
+
+//const authRouter = require('./routes/auth.routes');
+//const userRouter = require('./routes/user.routes');
+//app.use('/api', authRouter);
+//app.use('/api', userRouter);
 
 
 app.listen(3000, () => console.log('Example app is listening on port 3000.'));
+
+
+
+
 
 /*
 const port = 8000;
