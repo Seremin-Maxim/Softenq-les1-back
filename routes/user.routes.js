@@ -1,5 +1,7 @@
+//user.routes.js
 const { verifyToken, isAdmin, isModerator, isModeratorOrAdmin } = require("../middleware/authJwt");
 const controller = require("../controllers/user.controller");
+const db = require("../models");
 
 module.exports = function (app) {
   app.use(function (req, res, next) {
@@ -33,6 +35,10 @@ module.exports = function (app) {
       });
     });
   });
+
+  app.get('/api/users', verifyToken, controller.getUsers);
+
+  
 };
 
 

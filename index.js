@@ -1,6 +1,11 @@
-//старый rabichiy
+//index.js
 const express = require('express');//импорт, позволяющий делать запросы
 const cors = require('cors');//кросс-домен. запросы
+
+
+const { verifyToken, isAdmin, isModerator, isModeratorOrAdmin } = require("./middleware/authJwt");
+
+
 
 const db = require("./models");
 
@@ -11,12 +16,43 @@ const app = express();//экзепляр ехр приложения
 app.use(cors());//разрешаем кросс запросы
 app.use(express.json());
 
+// routes
+require('./routes/auth.routes')(app);
+require('./routes/user.routes')(app);
+
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/api",(req,res)=>{
-  res.send("Hello");
+  res.send("Hello, it`s back");
 });//когда на серв приходит гет запрос, ответ - хелло
+
+
+
+//только для аутентифицированных пользователей
+app.get("/api/main", verifyToken, (req, res) => {
+   res.status(200).send("This is a protected route.");
+});
+
+/*
+app.get("/api/users", verifyToken, (req, res) => {
+  db.user.findAll()
+    .then(users => {
+      res.status(200).json(users);
+    })
+    .catch(error => {
+      console.error('Ошибка при получении пользователей:', error);
+      res.status(500).json({ error: 'Внутренняя ошибка сервера' });
+    });
+});
+*/
+
+/*
+///api/main для пользователей с ролью "moderator" или "admin"
+app.get('/api/main/moderator-or-admin', verifyToken, isModeratorOrAdmin, (req, res) => {
+  res.status(200).send('This is a moderator or admin route.');
+});
+*/
 
 
 
@@ -45,14 +81,7 @@ function initial() {
   });
 }
 
-// routes
-require('./routes/auth.routes')(app);
-require('./routes/user.routes')(app);
 
-//const authRouter = require('./routes/auth.routes');
-//const userRouter = require('./routes/user.routes');
-//app.use('/api', authRouter);
-//app.use('/api', userRouter);
 
 
 app.listen(3000, () => console.log('Example app is listening on port 3000.'));
